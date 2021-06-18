@@ -1,25 +1,29 @@
-import logo from './logo.svg';
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 import './App.css';
+import { ProductCheckOutPage } from './components/ProductCheckOutPage';
 
-function App() {
+const App = () => {
+
   return (
+    <Router>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+      
+      <Switch>
 
-export default App;
+          <Route exact path="/">
+            <ProductCheckOutPage/>
+          </Route>
+
+          {/* I would put more routes in here once the UI interface became more complex - e.g. separate log-in, select product and checkout pages */}
+
+        </Switch>
+    </div>
+    </Router>
+  );
+};
+export { App };
