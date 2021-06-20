@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Badge, Box, Button, useTheme } from "@material-ui/core";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { Box, Button, useTheme } from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
 import * as database from '../database/index';
 import { CheckOut } from "../model/CheckOut";
 import { ProductCard } from "./ProductCard";
+import { Nav } from "./Nav";
 
 // insert card action re counter and add to shopping cart
 const ProductCheckOutPage = () => {
@@ -19,6 +20,8 @@ const ProductCheckOutPage = () => {
     const [premiumCounter, setPremiumCounter] = useState(0);
     const [items, setItems] = useState([]);
     const [checkoutTotal, setCheckoutTotal] = useState(0);
+    const [joraTotal, setJoraTotal] = useState(0);
+
     
     useEffect(() => {
         setCardsArray(database.products);
@@ -28,11 +31,11 @@ const ProductCheckOutPage = () => {
     
     const customerDealsMessage = () => {
         if(currentCustomer.name === 'SecondBite'){
-            return ('Special Deal: 3 for 2 Classic Ads!')
+            return ('3 for 2 Classic Ads!')
         } else if(currentCustomer.name === 'Axil'){
-            return ('Special Deal: StandOut Ads $299.99!')
+            return ('StandOut Ads $299.99!')
         } else if(currentCustomer.name === 'MYER'){
-            return ('Special Deal: 5 for 4 StandOut Ads, and Premium Ads $389.99!')
+            return ('5 for 4 StandOut Ads, and Premium Ads $389.99!')
         } else {
             return ('')
         } 
@@ -118,41 +121,63 @@ const ProductCheckOutPage = () => {
                 productCheckout.addItem(items[i]);
             }
             setCheckoutTotal(productCheckout.totalPrice().toFixed(2));  
-        }
+            setJoraTotal(productCheckout.freeJoraSubscriptions(items));
+            console.log(joraTotal);
+        } else {
+            setCheckoutTotal(0); 
+        };
+        
     }
       
 return (
-        <Box className="selectProducts" container width='91.5%'p={theme.spacing(1)} xs={12} sm={12} md={6} lg={4} >
+        <Box className="selectProducts" container width='98%' p={theme.spacing(0.25)} justifyContent='center' xs={12} sm={12} md={6} lg={4} >
+        <Nav handleSelectCustomer={handleSelectCustomer} currentCustomer={currentCustomer} customersArray={customersArray} customerDealsMessage={customerDealsMessage} array={items} checkoutTotal={checkoutTotal} joraTotal={joraTotal}/>
+        
         <h1>Select your ads and checkout</h1>
-        {/* if expanded I'd put the shopping cart in nav, and navigate to new page for itemised list - and make running total display before hitting checkout as well*/}
-        <Badge 
-        color="secondary" badgeContent={items.length}>
-         {checkoutTotal > 0 ? `$${checkoutTotal}` : ''} <ShoppingCartIcon /> 
-        </Badge> 
+        
         <Box>
         <Button variant="outlined" color="secondary" size="small" onClick={() => 
           handleCheckout()
         }
         >
+         Sub-total 
+        </Button>
+        <Button variant="outlined" color="primary" size="small" 
+        // onClick={
+        //   //navigate to checkout page
+        // }
+        >
          Checkout 
         </Button>
         </Box>
         
-        <Box>
-        <h3>Select customer</h3>
-            <select onChange={handleSelectCustomer} value={currentCustomer.name}>{
-            customersArray.map((el) => {
-              return (
-              <option
-                key={el.id} 
-                value={el.name} 
-                >{el.name}</option>
-                );
-            })
-          }</select>
-          <h4 style={{ color: 'red' }}>{customerDealsMessage()}</h4>
+        <Box display='flex' width='100%' my={theme.spacing(0.1)} p={theme.spacing(0)} justifyContent='center' xs={12} sm={12} md={6} lg={4} >
+        {currentCustomer.name === 'Default' ? (
+            <Alert 
+            alignContent='center'
+            severity="info" 
+            color="error">
+                <p><strong>Sub-total:</strong> {checkoutTotal > 0 ? `$${checkoutTotal}` : ''} </p>
+            <p>Free Jora subscription for each 10th item: {joraTotal > 0 ? `${joraTotal}` : '0'}</p>
+            
+        </Alert>
+        ) : (
+            <Box>
+            <Alert 
+                alignContent='center'
+                severity="info" 
+                color="error">
+                    
+                <strong>{customerDealsMessage()} </strong>
+                <p><strong>Sub-total:</strong> {checkoutTotal > 0 ? `$${checkoutTotal}` : ''} </p>
+                <p>Free Jora subscription for each 10th item: {joraTotal > 0 ? `${joraTotal}` : '0'}</p>
+            </Alert>
+            
+        </Box>)
+            }
           </Box>
-        <Box className="productCards" container display='flex' flexDirection='row' flexWrap='wrap' xs={12} sm={12} md={12} lg={12}>
+
+        <Box className="productCards" container display='flex' flexDirection='row' flexWrap='wrap' justifyContent='center' xs={12} sm={12} md={12} lg={12}>
         
         {
             cardsArray.map((el) => {

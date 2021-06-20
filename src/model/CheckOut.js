@@ -20,8 +20,20 @@ class CheckOut {
         }
         return total;
     }
+    // calculate number of free Jors Memberships
+    freeJoraSubscriptions(itemsInCheckout) {
+        let freeJora = 0; 
+        console.log(itemsInCheckout.length);
+        for(let i =  0; i < itemsInCheckout.length; i++){
+            let itemCount = i + 1;  
+            if(itemCount % 10 === 0){
+                freeJora += 1;
+                } 
+            }
+        return freeJora;   
+        }
+        
 };
-
 export { CheckOut };
 
 

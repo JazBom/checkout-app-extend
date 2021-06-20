@@ -2,6 +2,13 @@ import { Product } from '../model/Product.js';
 import { Customer } from '../model/Customer.js';
 // data would be seeded in Postgres DB or similar
 
+//POSSIBLE EXTENSIONS
+
+// Can get 1 Jora membership for free for every 10 items purchased.
+// High priority pricing rule
+// List all items' price after discount
+// List which discount rule applied to each item
+
 const customers = [
     {
         id: 1,
@@ -54,7 +61,7 @@ const products = [
     price: 394.99,
     imageUrl: 'https://i.imgur.com/FqnCJdi.png?2',
     imageName: 'Premium',
-    },
+    }
 ]
 
 const getProduct = (productName) => {
